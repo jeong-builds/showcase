@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeong Builds</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f7;
+            color:
+                #1d1d1f;
+        }
+
+        header {
+            background: #fff;
+            border-bottom: 1px solid #e0e0e5;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 16px;
+            color: #6e6e73;
+            margin-top: 8px;
+        }
+
+        main {
+            max-width: 900px;
+            margin: 48px auto;
+            padding: 0 24px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid #e0e0e5;
+        }
+
+        .card h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #6e6e73;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: #f0f0f5;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            color: #3a3a3c;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+        }
+
+        .live {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .building {
+            background: #fff8e1;
+            color: #f57f17;
+        }
+
+        .testing {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .dev {
+            background: #f3e5f5;
+            color: #6a1b9a;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            font-size: 13px;
+            color: #6e6e73;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Jeong Builds</h1>
+        <p>AI Transformation · 사내 인트라넷 · 업무 자동화</p>
+    </header>
+    <main>
+        <div class="grid">
+            <div class="card">
+                <h2>근태 관리 시스템</h2>
+                <span class="badge live">운영 중</span>
+                <p>PIN 로그인 기반 사내 근태 기록·이상·보완 신청. 관리자 대시보드에서 전체 현황 관리.</p>
+                <div class="tags">
+                    <span class="tag">HTML/JS</span>
+                    <span class="tag">Supabase</span>
+                    <span class="tag">Vercel</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>결재 시스템</h2>
+                <span class="badge building">구축 중</span>
+                <p>4종 결재 디지털화. Supabase + Google Sheets 이중 저장으로 이력 관리.</p>
+                <div class="tags">
+                    <span class="tag">HTML/JS</span>
+                    <span class="tag">Supabase</span>
+                    <span class="tag">Google Apps Script</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>AI 업무 허브</h2>
+                <span class="badge testing">테스트 중</span>
+                <p>Claude 기반 사내 AI 챗. 영업 현황·거래처·OKR 등 사내 데이터를 자연어로 조회.</p>
+                <div class="tags">
+                    <span class="tag">Claude API</span>
+                    <span class="tag">Vercel Serverless</span>
+                    <span class="tag">HTML/JS</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>숏츠 영상 생성 도구</h2>
+                <span class="badge dev">개발 중</span>
+                <p>기획안 docx 입력 → 자동 숏츠 영상 생성. .bat 실행으로 터미널 없이 사용 가능.</p>
+                <div class="tags">
+                    <span class="tag">Node.js</span>
+                    <span class="tag">ffmpeg</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>일계표 자동화</h2>
+                <span class="badge live">운영 중</span>
+                <p>매출매입 데이터 → 일계표 자동 생성. .exe 패키징으로 누구나 바로 실행 가능.</p>
+                <div class="tags">
+                    <span class="tag">Node.js</span>
+                    <span class="tag">xlsx</span>
+                    <span class="tag">.exe</span>
+                </div>
+            </div>
+            <div class="card">
+                <h2>영업 파이프라인 뷰어</h2>
+                <span class="badge testing">테스트 중</span>
+                <p>영업 진행 단계별 현황 시각화. 관리자·영업 담당자가 전체 파이프라인 파악.</p>
+                <div class="tags">
+                    <span class="tag">HTML/JS</span>
+                    <span class="tag">Supabase</span>
+                    <span class="tag">Vercel</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>jeong-builds · 2026</footer>
+</body>
+
+</html>
