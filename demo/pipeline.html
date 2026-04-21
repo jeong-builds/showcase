@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영업 파이프라인 — Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg:#f5f5f7; --surface:#ffffff; --border:rgba(0,0,0,0.08); --text:#1d1d1f; --text-sub:#6e6e73; --blue:#0071e3; --green:#1d8348; --radius:18px; }
+        * { box-sizing:border-box; margin:0; padding:0; }
+        body { font-family:'Noto Sans KR',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+        nav { position:fixed; top:0; left:0; right:0; height:52px; background:rgba(255,255,255,0.85); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; z-index:100; }
+        .nav-logo { font-size:0.95rem; font-weight:700; }
+        .nav-logo span { color:var(--blue); }
+        .nav-badge { background:#fef9c3; color:#854d0e; font-size:0.7rem; font-weight:600; padding:2px 10px; border-radius:20px; border:1px solid #fde68a; }
+        .demo-badge { background:#fee2e2; color:#991b1b; font-size:0.68rem; font-weight:600; padding:2px 8px; border-radius:20px; margin-left:6px; }
+        main { max-width:1100px; margin:0 auto; padding:80px 22px 60px; }
+        .page-title { font-size:2rem; font-weight:700; letter-spacing:-0.03em; margin-bottom:0.3rem; }
+        .page-sub { font-size:0.88rem; color:var(--text-sub); margin-bottom:2rem; }
+        .summary-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; margin-bottom:2rem; }
+        .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:1rem 1rem 0.8rem; text-align:center; }
+        .stat-num { font-size:1.7rem; font-weight:700; }
+        .stat-label { font-size:0.72rem; color:var(--text-sub); margin-top:3px; }
+        .stat-num.green { color:#059669; } .stat-num.amber { color:#d97706; } .stat-num.red { color:#dc2626; } .stat-num.blue { color:var(--blue); }
+        .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1.2rem; }
+        .filter-btn { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:5px 14px; font-size:0.78rem; font-weight:500; cursor:pointer; color:var(--text-sub); font-family:inherit; transition:all 0.15s; }
+        .filter-btn:hover { border-color:var(--green); color:var(--green); }
+        .filter-btn.active { background:var(--green); color:white; border-color:var(--green); }
+        .table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+        table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+        thead th { background:#f9fafb; font-weight:600; padding:10px 14px; text-align:left; border-bottom:1px solid var(--border); color:var(--text-sub); font-size:0.72rem; white-space:nowrap; }
+        tbody td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+        tbody tr:last-child td { border-bottom:none; }
+        tbody tr:hover td { background:#f9fafb; }
+        .team-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:0.68rem; font-weight:600; white-space:nowrap; }
+        .badge-A { background:#dbeafe; color:#1e40af; } .badge-B { background:#fef3c7; color:#92400e; } .badge-C { background:#f3e8ff; color:#6d28d9; } .badge-D { background:#fce7f3; color:#9d174d; } .badge-E { background:#ecfdf5; color:#065f46; }
+        .progress-wrap { display:flex; align-items:center; gap:7px; }
+        .progress-bar { width:64px; height:5px; background:#e5e7eb; border-radius:3px; overflow:hidden; flex-shrink:0; }
+        .progress-fill { height:100%; border-radius:3px; }
+        .p-high { background:#10b981; } .p-mid { background:#f59e0b; } .p-low { background:#ef4444; } .p-zero, .p-none { background:#d1d5db; }
+        .pct-text { font-size:0.75rem; color:var(--text-sub); white-space:nowrap; }
+        .id-cell { font-family:monospace; font-size:0.75rem; color:var(--text-sub); white-space:nowrap; }
+        .task-name { font-weight:500; } .task-desc { font-size:0.75rem; color:var(--text-sub); margin-top:2px; }
+        .action-text { font-size:0.75rem; color:var(--text-sub); max-width:200px; }
+        .date-cell { font-size:0.75rem; color:var(--text-sub); white-space:nowrap; }
+        .overdue { color:#dc2626; font-weight:600; }
+        .empty-msg { padding:2.5rem; text-align:center; color:var(--text-sub); font-size:0.85rem; }
+        @media (max-width:700px) { .page-title { font-size:1.5rem; } .col-hide { display:none; } }
+    </style>
+</head>
+<body>
+<nav>
+    <div style="display:flex;align-items:center;gap:10px;">
+        <span class="nav-logo">Intranet <span>Demo</span></span>
+        <span class="nav-badge">영업 파이프라인</span>
+        <span class="demo-badge">DEMO</span>
+    </div>
+    <div style="font-size:0.82rem;color:var(--text-sub);">데모 사용자</div>
+</nav>
+
+<main>
+    <h1 class="page-title">영업 파이프라인</h1>
+    <p class="page-sub">전사 미결업무 현황 — 더미 데이터 기준</p>
+
+    <div class="summary-grid">
+        <div class="stat-card"><div class="stat-num blue" id="stat-total">—</div><div class="stat-label">전체 업무</div></div>
+        <div class="stat-card"><div class="stat-num green" id="stat-high">—</div><div class="stat-label">완료임박 (80%↑)</div></div>
+        <div class="stat-card"><div class="stat-num amber" id="stat-stalled">—</div><div class="stat-label">정체 (30%↓)</div></div>
+        <div class="stat-card"><div class="stat-num red" id="stat-overdue">—</div><div class="stat-label">기한 초과</div></div>
+        <div class="stat-card"><div class="stat-num" style="color:#6b7280;" id="stat-teams">—</div><div class="stat-label">담당 팀</div></div>
+    </div>
+
+    <div class="filters">
+        <button class="filter-btn active" data-team="all">전체</button>
+        <button class="filter-btn" data-team="A">영업1팀</button>
+        <button class="filter-btn" data-team="B">영업2팀</button>
+        <button class="filter-btn" data-team="C">마케팅팀</button>
+        <button class="filter-btn" data-team="D">기술지원팀</button>
+        <button class="filter-btn" data-team="E">생산팀</button>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th><th>팀</th><th>업무내용</th><th>진행율</th>
+                    <th class="col-hide">완료예정</th><th class="col-hide">다음 액션</th>
+                </tr>
+            </thead>
+            <tbody id="pipeline-tbody"></tbody>
+        </table>
+        <div class="empty-msg" id="empty-msg" style="display:none;">해당 팀의 업무가 없습니다.</div>
+    </div>
+</main>
+
+<script>
+    const PIPELINE = [
+        { id:'A-001', team:'A', task:'신규 거래처 발굴 프로젝트', pct:70, due:'26.05.31', status:'후보 거래처 12개사 접촉 완료', action:'2차 미팅 일정 조율 중' },
+        { id:'A-002', team:'A', task:'기존 거래처 계약 갱신', pct:90, due:'26.04.30', status:'협상 최종 단계', action:'계약서 검토 후 서명 예정' },
+        { id:'A-003', team:'A', task:'제품 가격 체계 재정비', pct:50, due:'26.06.30', status:'원가 분석 완료, 가격표 작성 중', action:'팀장 검토 후 배포' },
+        { id:'A-004', team:'A', task:'분기 매출 보고서 작성', pct:80, due:'26.04.15', status:'데이터 취합 완료', action:'최종 검토 후 제출' },
+        { id:'B-001', team:'B', task:'해외 신규 시장 조사', pct:40, due:'26.05.15', status:'동남아 3개국 자료 수집 중', action:'현지 파트너 접촉 예정' },
+        { id:'B-002', team:'B', task:'수출 절차 매뉴얼 작성', pct:60, due:'26.05.31', status:'초안 작성 완료', action:'법무팀 검토 요청' },
+        { id:'B-003', team:'B', task:'해외 전시회 참가 준비', pct:30, due:'26.07.01', status:'부스 신청 완료', action:'홍보 자료 제작 시작' },
+        { id:'B-004', team:'B', task:'수출 실적 분기 집계', pct:85, due:'26.04.20', status:'거의 완료', action:'최종 확인 후 보고' },
+        { id:'C-001', team:'C', task:'브랜드 리뉴얼 프로젝트', pct:20, due:'26.08.31', status:'기획 단계', action:'디자인 에이전시 선정 중' },
+        { id:'C-002', team:'C', task:'SNS 콘텐츠 연간 계획', pct:70, due:'26.04.30', status:'상반기 계획 완료', action:'하반기 계획 수립' },
+        { id:'C-003', team:'C', task:'제품 카탈로그 제작', pct:55, due:'26.05.15', status:'디자인 시안 검토 중', action:'수정 후 인쇄 발주' },
+        { id:'D-001', team:'D', task:'고객 A/S 처리 체계 개선', pct:65, due:'26.05.31', status:'프로세스 재설계 완료', action:'시스템 반영 요청 중' },
+        { id:'D-002', team:'D', task:'기술 매뉴얼 업데이트', pct:40, due:'26.06.30', status:'개정 항목 취합 중', action:'담당자별 초안 작성' },
+        { id:'D-003', team:'D', task:'품질 인증 심사 준비', pct:80, due:'26.04.25', status:'서류 준비 완료', action:'심사 일정 확인', overdue:false },
+        { id:'E-001', team:'E', task:'생산 효율화 방안 검토', pct:35, due:'26.06.15', status:'현황 분석 중', action:'개선안 도출 예정' },
+        { id:'E-002', team:'E', task:'설비 점검 일정 수립', pct:90, due:'26.04.30', status:'일정 확정 완료', action:'점검팀 공지 예정' },
+        { id:'E-003', team:'E', task:'원자재 재고 최적화', pct:50, due:'26.05.31', status:'현재고 분석 완료', action:'발주 기준량 재산정' },
+        { id:'E-004', team:'E', task:'안전 교육 이수 현황 관리', pct:10, due:'26.03.31', status:'미착수', action:'교육 일정 배정 필요', overdue:true },
+    ];
+
+    const TEAM_NAMES = { A:'영업1팀', B:'영업2팀', C:'마케팅팀', D:'기술지원팀', E:'생산팀' };
+
+    function pctClass(p) {
+        if (p === null) return 'p-none';
+        if (p === 0) return 'p-zero';
+        if (p < 40) return 'p-low';
+        if (p < 70) return 'p-mid';
+        return 'p-high';
+    }
+
+    function renderRow(item) {
+        const p = item.pct;
+        const pDisplay = p === null ? '—' : p + '%';
+        const pFill = p === null ? 0 : p;
+        return `<tr data-team="${item.team}">
+            <td class="id-cell">${item.id}</td>
+            <td><span class="team-badge badge-${item.team}">${TEAM_NAMES[item.team]}</span></td>
+            <td><div class="task-name">${item.task}</div><div class="task-desc">${item.status}</div></td>
+            <td><div class="progress-wrap"><div class="progress-bar"><div class="progress-fill ${pctClass(p)}" style="width:${pFill}%"></div></div><span class="pct-text">${pDisplay}</span></div></td>
+            <td class="date-cell col-hide ${item.overdue ? 'overdue' : ''}">${item.due}${item.overdue ? ' ⚠' : ''}</td>
+            <td class="action-text col-hide">${item.action}</td>
+        </tr>`;
+    }
+
+    function render(team) {
+        const filtered = team === 'all' ? PIPELINE : PIPELINE.filter(r => r.team === team);
+        const tbody = document.getElementById('pipeline-tbody');
+        const empty = document.getElementById('empty-msg');
+        if (!filtered.length) { tbody.innerHTML = ''; empty.style.display = 'block'; }
+        else { tbody.innerHTML = filtered.map(renderRow).join(''); empty.style.display = 'none'; }
+    }
+
+    function updateStats() {
+        document.getElementById('stat-total').textContent = PIPELINE.length;
+        document.getElementById('stat-high').textContent = PIPELINE.filter(r => r.pct >= 80).length;
+        document.getElementById('stat-stalled').textContent = PIPELINE.filter(r => r.pct !== null && r.pct <= 30).length;
+        document.getElementById('stat-overdue').textContent = PIPELINE.filter(r => r.overdue).length;
+        document.getElementById('stat-teams').textContent = Object.keys(TEAM_NAMES).length;
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render(btn.dataset.team);
+        });
+    });
+
+    updateStats();
+    render('all');
+</script>
+</body>
+</html>
